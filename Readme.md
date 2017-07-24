@@ -54,6 +54,9 @@ var io = require('socket.io-emitter')(Cluster);
   // sending to all clients in 'game' room
   io.to('game').emit('new-game', /* ... */);
 
+  // sending to all clients in 'game' and 'players' room
+  io.to(['game', 'players']).emit('new-game', /* ... */);
+
   // sending to individual socketid (private message)
   io.to(<socketid>).emit('private', /* ... */);
 
