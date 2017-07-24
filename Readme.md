@@ -111,8 +111,8 @@ If you don't want to supply a redis client object, and want
 `socket.io-emitter` to intiialize one for you, make sure to supply the
 `host` and `port` options.
 
-### Emitter#to(room:String):Emitter
-### Emitter#in(room:String):Emitter
+### Emitter#to(rooms:String|Array):Emitter
+### Emitter#in(rooms:String|Array):Emitter
 
 Specifies a specific `room` that you want to emit to.
 
