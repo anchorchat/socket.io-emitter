@@ -107,9 +107,9 @@ Emitter.prototype.to = function(rooms){
   };
 
   if (Array.isArray(rooms)) {
-    for (room of rooms) {
+    rooms.forEach(function(room) {
       addToRooms(room);
-    }
+    });
   }
 
   if (typeof rooms === 'string') {
@@ -149,11 +149,12 @@ Emitter.prototype.emit = function(){
   var channel = this.channel;
 
   if (opts.rooms) {
-    for (room of opts.rooms) {
+    opts.rooms.forEach(function(room) {
       debug('publishing message to channel %s', channel);
-      this.redis.publish(`${channel}${room}#`, msg);
-    }
+      this.redis.publish(channel + room + '#', msg);
+    });
   } else {
+    debug('publishing message to channel %s', channel);
     this.redis.publish(channel, msg);
   }
 
