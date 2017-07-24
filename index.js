@@ -148,9 +148,13 @@ Emitter.prototype.emit = function(){
   var msg = msgpack.encode([uid, packet, opts]);
   var channel = this.channel;
 
-  for (room of opts.rooms) {
-    debug('publishing message to channel %s', channel);
-    this.redis.publish(`${channel}${room}#`, msg);
+  if (opts.rooms) {
+    for (room of opts.rooms) {
+      debug('publishing message to channel %s', channel);
+      this.redis.publish(`${channel}${room}#`, msg);
+    }
+  } else {
+    this.redis.publish(channel, msg);
   }
 
   // reset state
