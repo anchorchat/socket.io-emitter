@@ -96,12 +96,27 @@ flags.forEach(function(flag){
  */
 
 Emitter.prototype.in =
-Emitter.prototype.to = function(room){
-  if (!~this._rooms.indexOf(room)) {
-    debug('room %s', room);
-    this._rooms.push(room);
+Emitter.prototype.to = function(rooms){
+  var self = this;
+
+  var addToRooms = function(room){
+    if (!~self._rooms.indexOf(room)) {
+      debug('room %s', room);
+      self._rooms.push(room);
+    }
+  };
+
+  if (Array.isArray(rooms)) {
+    for (room of rooms) {
+      addToRooms(room);
+    }
   }
-  return this;
+
+  if (typeof rooms === 'string') {
+    addToRooms(rooms);
+  }
+
+  return self;
 };
 
 /**
@@ -132,11 +147,11 @@ Emitter.prototype.emit = function(){
 
   var msg = msgpack.encode([uid, packet, opts]);
   var channel = this.channel;
-  if (opts.rooms && opts.rooms.length === 1) {
-    channel += opts.rooms[0] + '#';
+
+  for (room of opts.rooms) {
+    debug('publishing message to channel %s', channel);
+    this.redis.publish(`${channel}${room}#`, msg);
   }
-  debug('publishing message to channel %s', channel);
-  this.redis.publish(channel, msg);
 
   // reset state
   this._rooms = [];
